@@ -46,6 +46,7 @@ MLOps-Course-Labs/
 ├── confusion_matrix_xgb.png   # XGBoost confusion matrix
 │
 └── README.md             # This file
+```
 ## 🧪 Experiments Tracked with MLflow
 
 All models were trained and evaluated using **MLflow**.  
@@ -121,8 +122,9 @@ Experiments were logged with:
 git clone https://github.com/YOUR_USERNAME/MLOps-Course-Labs.git
 cd MLOps-Course-Labs
 git checkout research
-
+```
 ### 2. Setup Environment
+```bash
 # Create and activate the environment
 conda create -n churn_prediction python=3.12
 conda activate churn_prediction
@@ -134,15 +136,17 @@ source churn_prediction/bin/activate  # On Linux/Mac
 
 # Install dependencies
 pip install -r requirements.txt
-
+```
 ### 3. Run Training Scripts
+```bash
 python src/log_regression.py        
 python src/random_forest.py     
 python src/XGBoost.py   
-
+```
 ### 4. Launch MLflow UI
+```bash
 mlflow ui
-
+```
 ## 🙋 Author
 
 - **Name:** Rowaina  
