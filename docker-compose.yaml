@@ -1,10 +1,13 @@
 services:
   api:
-    build: api
+    build: ./api
     ports:
       - 8086:8086
     volumes:
-      - models:/mlruns
+      - ./Models:/app/Models
+    depends_on:
+      - mlflow
+
 
   app:
     build: app

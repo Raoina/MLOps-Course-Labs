@@ -1,26 +1,51 @@
-import streamlit as st
-import requests as rs
+from fastapi import FastAPI
+from pydantic import BaseModel
+import joblib
+import logging
 
-sepal_length = st.text_input("Sepal Length")
-sepal_width = st.text_input("Sepal Width")
-petal_length = st.text_input("Petal Length")
-petal_width = st.text_input("Petal Width ")
+logging.basicConfig(level=logging.INFO)
+app = FastAPI()
 
+model = joblib.load("Models/random_forest.pkl") 
 
-def get_api(params):
-    url = f"http://api:8086/predict/"
-    response = rs.get(url, params=params)
-    return response.content
+class CustomerData(BaseModel):
+    CreditScore: float
+    Geography: str
+    Gender: str
+    Age: int
+    Tenure: int
+    Balance: float
+    NumOfProducts: int
+    HasCrCard: int
+    IsActiveMember: int
+    EstimatedSalary: float
 
+@app.get("/")
+def home():
+    logging.info("Home endpoint accessed")
+    return {"message": "Welcome to the Bank Churn Prediction API"}
 
-if st.button("Get response"):
-    params = {
-        "sepal_length": float(sepal_length),
-        "sepal_width": float(sepal_width),
-        "petal_length": float(petal_length),
-        "petal_width": float(petal_width)
-    }
+@app.get("/health")
+def health():
+    logging.info("Health endpoint accessed")
+    return {"status": "healthy"}
 
-    data = get_api(params)
-    st.write(data)
+@app.post("/predict")
+def predict(data: CustomerData):
+    logging.info(f"Predict endpoint called with data: {data}")
 
+    X = [[
+        data.CreditScore,
+        1 if data.Geography == "France" else 0,
+        1 if data.Gender == "Male" else 0,
+        data.Age,
+        data.Tenure,
+        data.Balance,
+        data.NumOfProducts,
+        data.HasCrCard,
+        data.IsActiveMember,
+        data.EstimatedSalary,
+    ]]
+    prediction = model.predict(X)
+    logging.info(f"Prediction result: {prediction[0]}")
+    return {"churn_prediction": int(prediction[0])}
